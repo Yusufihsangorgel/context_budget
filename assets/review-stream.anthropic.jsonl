@@ -1,0 +1,27 @@
+data: {"type":"message_start","message":{"id":"msg_demo"}}
+data: {"type":"content_block_start","index":0}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "{\"verdict\":"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \"needs-cha"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "nges\", \"fin"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "dings\": [{\""}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "file\": \"lib"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "/src/partia"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "l_json.dart"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\", \"note\": "}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\"dangling c"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "omma path i"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "s untested\""}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "}, {\"file\":"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": " \"lib/src/s"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "treaming.da"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "rt\", \"note\""}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": ": \"dedupe c"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "ompares enc"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "oded string"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "s each tick"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "\"}], \"confi"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "dence\": 0.8"}}
+data: {"type": "content_block_delta", "index": 0, "delta": {"type": "text_delta", "text": "2}"}}
+data: {"type":"content_block_stop","index":0}
+data: {"type":"message_stop"}
+data: [DONE]
