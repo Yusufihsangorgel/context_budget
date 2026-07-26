@@ -8,7 +8,9 @@ void main() {
   late Tokenizer tokenizer;
   late Directory root;
 
-  setUpAll(() => tokenizer = Tokenizer.fromFile('assets/bert-base-uncased.json'));
+  setUpAll(
+    () => tokenizer = Tokenizer.fromFile('assets/bert-base-uncased.json'),
+  );
   tearDownAll(() => tokenizer.close());
 
   setUp(() => root = Directory.systemTemp.createTempSync('budget_test'));
@@ -37,8 +39,16 @@ void main() {
 
   test('skips build and dependency directories without counting them', () {
     write('lib/a.dart', 'const x = 1;');
-    write('build/generated.dart', List.filled(500, 'const y = 2;').join());
-    write('node_modules/dep/index.js', List.filled(500, 'var z = 3;').join());
+    // Nested, not at the root: matching only the first path segment would let
+    // every vendored and generated tree back into the count.
+    write(
+      'packages/inner/build/generated.dart',
+      List.filled(500, 'const y = 2;').join(),
+    );
+    write(
+      'a/b/node_modules/dep/index.js',
+      List.filled(500, 'var z = 3;').join(),
+    );
 
     final b = measure();
 
@@ -48,8 +58,9 @@ void main() {
   test('reports unreadable and empty files rather than dropping them', () {
     write('good.txt', 'hello');
     write('empty.txt', '');
-    File('${root.path}${Platform.pathSeparator}binary.bin')
-        .writeAsBytesSync([0xC3, 0x28, 0xA0, 0xA1]);
+    File(
+      '${root.path}${Platform.pathSeparator}binary.bin',
+    ).writeAsBytesSync([0xC3, 0x28, 0xA0, 0xA1]);
 
     final b = measure();
 
@@ -75,6 +86,10 @@ void main() {
     expect(measure(window: tokens).fits, isTrue);
     expect(measure(window: tokens).fill, 1.0);
     expect(measure(window: tokens - 1).fits, isFalse);
+
+    // A full window makes fill symmetric, so the operands could be swapped
+    // without the assertion above noticing. This one is off-centre.
+    expect(measure(window: tokens * 4).fill, closeTo(0.25, 1e-9));
   });
 
   test('largestFittingSet takes the cheapest files first', () {
@@ -89,6 +104,21 @@ void main() {
 
     expect(b.fits, isFalse);
     expect(b.largestFittingSet.map((c) => c.path), ['tiny.txt']);
+
+    // What the set is for: whatever it returns has to fit. Naming the members
+    // does not say that, and the CLI recommends this set to a user who is
+    // already over budget.
+    write('small.txt', 'hello there');
+    final three = measure();
+    final cheapest = three.costs.last;
+    final window = cheapest.tokens + 1;
+    final capped = measure(window: window);
+
+    expect(capped.costs.length, 3);
+    expect(
+      capped.largestFittingSet.fold<int>(0, (sum, c) => sum + c.tokens),
+      lessThanOrEqualTo(window),
+    );
   });
 
   test('density is bytes per token', () {
@@ -101,7 +131,10 @@ void main() {
 
   test('source code costs more tokens per byte than prose', () {
     write('prose.txt', 'the quick brown fox jumps over the lazy dog ' * 20);
-    write('code.dart', "import 'dart:io';\nvoid main() { print('hi'); }\n" * 20);
+    write(
+      'code.dart',
+      "import 'dart:io';\nvoid main() { print('hi'); }\n" * 20,
+    );
 
     final b = measure();
     final prose = b.costs.firstWhere((c) => c.path == 'prose.txt');
