@@ -9,7 +9,10 @@ import 'package:context_budget/src/render.dart';
 
 Future<void> main(List<String> args) async {
   final runner =
-      CommandRunner<void>('context_budget', 'Know what you are sending a model.')
+      CommandRunner<void>(
+          'context_budget',
+          'Know what you are sending a model.',
+        )
         ..addCommand(BudgetCommand())
         ..addCommand(RenderCommand());
   try {
@@ -26,7 +29,8 @@ class BudgetCommand extends Command<void> {
       ..addOption(
         'tokenizer',
         abbr: 't',
-        help: 'Path to a tokenizer.json. Use the one your model ships so the '
+        help:
+            'Path to a tokenizer.json. Use the one your model ships so the '
             'counts are the counts the model will actually see.',
         defaultsTo: 'assets/bert-base-uncased.json',
       )
@@ -99,16 +103,17 @@ class BudgetCommand extends Command<void> {
     out.writeln('window     ${_n(budget.window)} tokens');
     out.writeln();
 
-    final shown =
-        top == null ? budget.costs : budget.costs.take(top).toList();
+    final shown = top == null ? budget.costs : budget.costs.take(top).toList();
     if (shown.isNotEmpty) {
       final width = shown.map((c) => _n(c.tokens).length).reduce(_max);
       for (final c in shown) {
         final pct = (c.tokens / budget.window * 100).toStringAsFixed(1);
-        out.writeln('  ${_n(c.tokens).padLeft(width)}  '
-            '${pct.padLeft(5)}%  '
-            '${c.density.toStringAsFixed(1).padLeft(4)} B/tok  '
-            '${c.path}');
+        out.writeln(
+          '  ${_n(c.tokens).padLeft(width)}  '
+          '${pct.padLeft(5)}%  '
+          '${c.density.toStringAsFixed(1).padLeft(4)} B/tok  '
+          '${c.path}',
+        );
       }
       if (top != null && budget.costs.length > top) {
         out.writeln('  ... and ${budget.costs.length - top} more files');
@@ -117,15 +122,19 @@ class BudgetCommand extends Command<void> {
     }
 
     final pct = (budget.fill * 100).toStringAsFixed(1);
-    out.writeln('${_n(budget.totalTokens)} tokens across '
-        '${budget.costs.length} files, $pct% of the window');
+    out.writeln(
+      '${_n(budget.totalTokens)} tokens across '
+      '${budget.costs.length} files, $pct% of the window',
+    );
 
     if (!budget.fits) {
       final fitting = budget.largestFittingSet;
       final overBy = budget.totalTokens - budget.window;
-      out.writeln('over by ${_n(overBy)} tokens; '
-          '${fitting.length} of ${budget.costs.length} files fit if you drop '
-          'the most expensive ones first');
+      out.writeln(
+        'over by ${_n(overBy)} tokens; '
+        '${fitting.length} of ${budget.costs.length} files fit if you drop '
+        'the most expensive ones first',
+      );
     }
 
     if (budget.skipped.isNotEmpty) {
@@ -133,8 +142,9 @@ class BudgetCommand extends Command<void> {
       for (final reason in budget.skipped.values) {
         byReason[reason] = (byReason[reason] ?? 0) + 1;
       }
-      final parts =
-          byReason.entries.map((e) => '${e.value} ${e.key}').join(', ');
+      final parts = byReason.entries
+          .map((e) => '${e.value} ${e.key}')
+          .join(', ');
       out.writeln('skipped ${budget.skipped.length} files ($parts)');
     }
   }
@@ -164,10 +174,9 @@ class RenderCommand extends Command<void> {
     final rest = argResults!.rest;
     final lines = rest.isEmpty
         ? stdin.transform(utf8.decoder).transform(const LineSplitter())
-        : File(rest.first)
-            .openRead()
-            .transform(utf8.decoder)
-            .transform(const LineSplitter());
+        : File(
+            rest.first,
+          ).openRead().transform(utf8.decoder).transform(const LineSplitter());
 
     final provider = Provider.parse(argResults!['provider'] as String);
     const encoder = JsonEncoder.withIndent('  ');

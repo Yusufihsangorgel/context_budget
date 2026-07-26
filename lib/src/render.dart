@@ -13,12 +13,12 @@ enum Provider {
   final DeltaExtractor extractor;
 
   static Provider parse(String name) => Provider.values.firstWhere(
-        (p) => p.name == name,
-        orElse: () => throw ArgumentError(
-          'unknown provider "$name", expected one of '
-          '${Provider.values.map((p) => p.name).join(', ')}',
-        ),
-      );
+    (p) => p.name == name,
+    orElse: () => throw ArgumentError(
+      'unknown provider "$name", expected one of '
+      '${Provider.values.map((p) => p.name).join(', ')}',
+    ),
+  );
 }
 
 /// Reads a recorded stream, one JSON chunk per line, as the provider emitted it.
@@ -44,5 +44,4 @@ Stream<Map<String, dynamic>> readChunks(Stream<String> lines) async* {
 Stream<Object?> replay(
   Stream<Map<String, dynamic>> chunks,
   Provider provider,
-) =>
-    streamPartialJsonFrom(chunks, provider.extractor);
+) => streamPartialJsonFrom(chunks, provider.extractor);
